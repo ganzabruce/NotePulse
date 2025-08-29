@@ -5,7 +5,7 @@ export const noteContext = createContext();
 
 const noteReducer = (state, action) => {
   switch (action.type) {
-    case "get_note":
+    case "get_notes":
       return { notes: action.payload };
 
     case "add_note":
@@ -13,7 +13,7 @@ const noteReducer = (state, action) => {
 
     case "delete_note":
       return {
-        notes: state.notes.filter((e) => e.id !== action.payload),
+        notes: (state.notes || []).filter((note) => note.id !== action.payload),
       };
 
     default:
@@ -22,19 +22,20 @@ const noteReducer = (state, action) => {
 };
 
 export const NoteContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(noteReducer, { notes: [] });
 
-  // ✅ load notes from localStorage on first render
+  const [state, dispatch] = useReducer(noteReducer, { notes: null });
+
   useEffect(() => {
     const saved = localStorage.getItem("notes");
     if (saved) {
-      dispatch({ type: "get_note", payload: JSON.parse(saved) });
+      dispatch({ type: "get_notes", payload: JSON.parse(saved) });
+    } else {
+      dispatch({ type: "get_notes", payload: [] }); 
     }
   }, []);
 
-  // ✅ save notes to localStorage whenever they change
   useEffect(() => {
-    if (state.notes) {
+    if (state.notes !== null) {
       localStorage.setItem("notes", JSON.stringify(state.notes));
     }
   }, [state.notes]);

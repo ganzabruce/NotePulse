@@ -1,8 +1,11 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useNoteContext } from "../hooks/useNoteContext";
 
 const Listing = () => {
   const { notes, dispatch } = useNoteContext();
+  const [low ,setLow] = useState()
+  
 
   const handleDelete = (id) => {
     dispatch({ type: "delete_note", payload: id });
@@ -25,9 +28,6 @@ const Listing = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                {/* <button className="btn btn-square btn-ghost">
-                  <i className="fa-solid fa-pencil"></i>
-                </button> */}
                 <button
                   className="btn btn-square btn-ghost"
                   onClick={() => handleDelete(note.id)}
